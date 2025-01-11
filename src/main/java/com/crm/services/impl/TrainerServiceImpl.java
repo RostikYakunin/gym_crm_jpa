@@ -54,7 +54,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         trainer.setUsername(uniqueUsername);
         trainer.setPassword(generatedPassword);
-        trainer.setIsActive(true);
+        trainer.setActive(true);
 
         var savedTrainer = trainerRepo.save(trainer);
         log.info("Trainer with id={} was successfully saved", savedTrainer.getId());
@@ -102,8 +102,8 @@ public class TrainerServiceImpl implements TrainerService {
                         }
                 );
 
-        log.info("Changing status for trainer with id={} from {} to {}", trainerId, foundTrainer.getIsActive(), !foundTrainer.getIsActive());
-        foundTrainer.setIsActive(!foundTrainer.getIsActive());
+        log.info("Changing status for trainer with id={} from {} to {}", trainerId, foundTrainer.isActive(), !foundTrainer.isActive());
+        foundTrainer.setActive(!foundTrainer.isActive());
         var updatedTrainer = trainerRepo.update(foundTrainer);
 
         log.info("Status changing successfully completed...");

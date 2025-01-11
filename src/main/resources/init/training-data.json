@@ -1,44 +1,59 @@
 [
   {
-    "id": 1,
-    "traineeId": 1,
-    "trainerId": 1,
+    "trainee":  {
+      "id": 1
+    },
+    "trainer": {
+      "id": 6
+    },
     "trainingName": "Resistance",
     "trainingType": "RESISTANCE",
     "trainingDate": "2024-01-01T15:30:00",
     "trainingDuration": "PT1H"
   },
   {
-    "id": 2,
-    "traineeId": 2,
-    "trainerId": 2,
+    "trainee":  {
+      "id": 2
+    },
+    "trainer": {
+      "id": 7
+    },
     "trainingName": "Fitness",
     "trainingType": "FITNESS",
     "trainingDate": "2024-01-02T15:30:00",
     "trainingDuration": "PT1H30M"
   },
   {
-    "id": 3,
-    "traineeId": 3,
-    "trainerId": 4,
+    "trainee":  {
+      "id": 3
+    },
+    "trainer": {
+      "id": 8
+    },
     "trainingName": "Yoga",
     "trainingType": "YOGA",
     "trainingDate": "2024-01-03T15:30:00",
     "trainingDuration": "PT45M"
   },
   {
-    "id": 4,
-    "traineeId": 4,
-    "trainerId": 5,
+    "trainee":  {
+      "id": 4
+    },
+    "trainer": {
+      "id": 9
+    },
     "trainingName": "Zumba",
     "trainingType": "ZUMBA",
     "trainingDate": "2024-01-04T15:30:00",
     "trainingDuration": "PT1H15M"
   },
   {
-    "id": 5,
-    "traineeId": 5,
-    "trainerId": 3,
+    "trainee":  {
+      "id": 5
+    },
+    "trainer": {
+      "id": 10
+    },
     "trainingName": "Stretching",
     "trainingType": "STRETCHING",
     "trainingDate": "2024-01-05T15:30:00",

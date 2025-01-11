@@ -11,13 +11,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.List;
 
 @Component
@@ -28,35 +34,51 @@ import java.util.List;
 public class DataInitializer {
     @Value("${data.file.trainee_data}")
     private String traineeDataFilePath;
-
     @Value("${data.file.trainer_data}")
     private String trainerDataFilePath;
-
     @Value("${data.file.training_data}")
     private String trainingDataFilePath;
+    @Value("${data.file.training_type_data}")
+    private String trainingTypeDataFilePath;
 
+    private final DataSource dataSource;
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
     private final ObjectMapper objectMapper;
 
-    //@PostConstruct
+    @PostConstruct
     public void initializeData() {
         try {
-            log.info("TraineeDataBase`s initialization started ...");
+            log.info("TrainingTypeData`s initialization started ...");
+            initializeTrainingTypeData();
+            log.info("TrainingTypeData`s initialization successfully completed");
+
+            log.info("TraineeData`s initialization started ...");
             initializeTraineeData();
-            log.info("TraineeDataBase`s initialization successfully completed");
+            log.info("TraineeData`s initialization successfully completed");
 
-            log.info("TrainerDataBase`s initialization started ...");
+            log.info("TrainerData`s initialization started ...");
             initializeTrainerData();
-            log.info("TrainerDataBase`s initialization successfully completed");
+            log.info("TrainerData`s initialization successfully completed");
 
-            log.info("TrainingDataBase`s initialization started ...");
+            log.info("TrainingData`s initialization started ...");
             initializeTrainingData();
-            log.info("TrainingDataBase`s initialization successfully completed");
+            log.info("TrainingData`s initialization successfully completed");
         } catch (Exception e) {
-            log.error("DataBase initialization failed ...");
+            log.error("Data initialization failed ...");
             throw new RuntimeException("Something went wrong with file deserialization", e);
+        }
+    }
+
+    @SneakyThrows
+    private void initializeTrainingTypeData() {
+        try (
+                Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement()
+        ) {
+            String dataQuery = Files.readString(Path.of(trainingTypeDataFilePath));
+            statement.execute(dataQuery);
         }
     }
 

@@ -55,7 +55,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         trainee.setUsername(uniqueUsername);
         trainee.setPassword(generatedPassword);
-        trainee.setIsActive(true);
+        trainee.setActive(true);
 
         var savedTrainee = traineeRepo.save(trainee);
         log.info("Trainee with id={} was successfully saved", savedTrainee.getId());
@@ -132,8 +132,8 @@ public class TraineeServiceImpl implements TraineeService {
                         }
                 );
 
-        log.info("Changing status for trainer with id={} from {} to {}", traineeId, foundTrainee.getIsActive(), !foundTrainee.getIsActive());
-        foundTrainee.setIsActive(!foundTrainee.getIsActive());
+        log.info("Changing status for trainer with id={} from {} to {}", traineeId, foundTrainee.isActive(), !foundTrainee.isActive());
+        foundTrainee.setActive(!foundTrainee.isActive());
         var updatedTrainee = traineeRepo.update(foundTrainee);
 
         log.info("Status changing successfully completed...");

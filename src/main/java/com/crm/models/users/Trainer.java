@@ -6,8 +6,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -29,7 +29,7 @@ public class Trainer extends User {
 
     @ManyToMany(mappedBy = "trainers")
     @Builder.Default
-    private List<Trainee> trainees = new ArrayList<>();
+    private Set<Trainee> trainees = new HashSet<>();
 
     @Override
     public String toString() {

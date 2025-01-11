@@ -7,8 +7,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -37,11 +37,11 @@ public class Trainee extends User {
             inverseJoinColumns = @JoinColumn(name = "trainer_id")
     )
     @Builder.Default
-    private List<Trainer> trainers = new ArrayList<>();
+    private Set<Trainer> trainers = new HashSet<>();
 
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Training> trainings = new ArrayList<>();
+    private Set<Training> trainings = new HashSet<>();
 
     @Override
     public String toString() {
