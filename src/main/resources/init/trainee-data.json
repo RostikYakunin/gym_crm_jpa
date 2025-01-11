@@ -1,0 +1,52 @@
+[
+  {
+    "userId": 1,
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "John.Doe",
+    "password": "k8gHs9LpB1",
+    "active": true,
+    "dateOfBirth": "1990-01-15",
+    "address": "123 Main Street, Springfield"
+  },
+  {
+    "userId": 2,
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "username": "Jane.Smith",
+    "password": "Jf7tRx9QyZ",
+    "active": true,
+    "dateOfBirth": "1992-05-20",
+    "address": "456 Elm Street, Shelbyville"
+  },
+  {
+    "userId": 3,
+    "firstName": "Michael",
+    "lastName": "Brown",
+    "username": "Michael.Brown",
+    "password": "2qG7fVcHpX",
+    "active": false,
+    "dateOfBirth": "1988-03-10",
+    "address": "789 Oak Street, Capital City"
+  },
+  {
+    "userId": 4,
+    "firstName": "Emily",
+    "lastName": "Davis",
+    "username": "Emily.Davis",
+    "password": "Fg9yP1BtJx",
+    "active": true,
+    "dateOfBirth": "1995-07-25",
+    "address": "321 Pine Street, Ogdenville"
+  },
+  {
+    "userId": 5,
+    "firstName": "Chris",
+    "lastName": "Wilson",
+    "username": "Chris.Wilson",
+    "password": "N6mBk5Q8Vt",
+    "active": true,
+    "dateOfBirth": "1993-11-12",
+    "address": "654 Birch Street, North Haverbrook"
+  }
+]
