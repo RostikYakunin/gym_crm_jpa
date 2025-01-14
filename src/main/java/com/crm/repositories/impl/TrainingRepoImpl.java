@@ -1,6 +1,6 @@
 package com.crm.repositories.impl;
 
-import com.crm.models.training.Training;
+import com.crm.repositories.entities.Training;
 import com.crm.repositories.TrainingRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
