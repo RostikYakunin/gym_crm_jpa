@@ -39,6 +39,5 @@ public abstract class UserDto {
     )
     private String password;
 
-    @NotNull(message = "Active status is mandatory")
     private Boolean isActive;
 }

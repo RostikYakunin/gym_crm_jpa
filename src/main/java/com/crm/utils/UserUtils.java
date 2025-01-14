@@ -50,9 +50,9 @@ public class UserUtils {
         return hashedPass;
     }
 
-    public static boolean matchesPasswordHash (String newPassword, String passwordHash){
+    public static boolean matchesPasswordHash (String inputtedPassword, String passwordHash){
         log.info("Started checking password and hash... ");
-        var result = BCrypt.checkpw(newPassword, passwordHash);
+        var result = BCrypt.checkpw(inputtedPassword, passwordHash);
         log.info("Checking successfully completed... ");
         return result;
     }

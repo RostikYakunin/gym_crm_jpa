@@ -30,7 +30,7 @@ public abstract class User {
     @Column(name = "username", unique = true, nullable = false, length = 101)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 10)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "is_active", nullable = false)

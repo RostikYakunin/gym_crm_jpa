@@ -1,83 +1,62 @@
 package com.crm.repositories.impl;
 
-import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.TrainerRepo;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import com.crm.repositories.entities.Trainer;
+import com.crm.repositories.entities.Training;
+import com.crm.repositories.entities.TrainingType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 @Slf4j
-public class TrainerRepoImpl implements TrainerRepo {
-    @PersistenceContext
-    private EntityManager entityManager;
-
+public class TrainerRepoImpl extends AbstractUserRepo<Trainer> implements TrainerRepo {
     @Override
-    public Optional<Trainer> findById(long id) {
-        log.debug("Start searching trainer by id... ");
-        return Optional.ofNullable(entityManager.find(Trainer.class, id));
+    protected Class<Trainer> getEntityClass() {
+        return Trainer.class;
     }
 
     @Override
-    public Optional<Trainer> findByUserName(String username) {
-        log.debug("Start searching trainer by username... ");
-        String query = "SELECT t FROM Trainer t WHERE t.username= :username";
-        var trainer = (Trainer) entityManager.createQuery(query)
-                .setParameter("username", username)
-                .getSingleResult();
-
-        return Optional.ofNullable(trainer);
+    protected String getEntityClassName() {
+        return Trainer.class.getSimpleName();
     }
 
     @Override
-    @Transactional
-    public Trainer save(Trainer entity) {
-        log.debug("Start saving trainer... ");
-        if (entity.getId() != 0) {
-            log.debug("Start merging trainer with id= " + entity.getId());
-            return entityManager.merge(entity);
-        }
+    public List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName, TrainingType trainingType) {
+        var jpql = """
+                SELECT t FROM Training t
+                WHERE t.trainer.username = :trainerUsername
+                AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
+                AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+                AND (:traineeName IS NULL OR t.trainee.firstName LIKE CONCAT('%', :traineeName, '%') OR t.trainee.lastName LIKE CONCAT('%', :traineeName, '%'))
+                AND (:trainingType IS NULL OR t.trainingType = :trainingType)
+                """;
 
-        log.debug("Start merging trainer... ");
-        entityManager.persist(entity);
-        return entity;
+        var query = entityManager.createQuery(jpql, Training.class);
+        query.setParameter("trainerUsername", trainerUsername);
+        query.setParameter("fromDate", fromDate != null ? fromDate.atStartOfDay() : null);
+        query.setParameter("toDate", toDate != null ? toDate.atTime(23, 59, 59) : null);
+        query.setParameter("traineeName", traineeName);
+        query.setParameter("trainingType", trainingType);
+
+        return query.getResultList();
     }
 
     @Override
-    public Trainer update(Trainer entity) {
-        log.debug("Start updating trainer... ");
-        return save(entity);
-    }
+    public List<Trainer> getUnassignedTrainersByTraineeUsername(String traineeUsername) {
+        String jpql = """
+                 SELECT tr FROM Trainer tr
+                 WHERE tr.id NOT IN (
+                   SELECT t.trainer.id FROM Training t
+                   WHERE t.trainee.username = :traineeUsername
+                )
+                """;
 
-    @Override
-    public void delete(Trainer entity) {
-        log.debug("Start deleting trainer... ");
-        entityManager.remove(entity);
-    }
+        var query = entityManager.createQuery(jpql, Trainer.class);
+        query.setParameter("traineeUsername", traineeUsername);
 
-    @Override
-    public boolean isExistsById(long id) {
-        log.debug("Start searching trainer with id= " + id);
-        var query = "SELECT COUNT(t) FROM Trainer t WHERE t.id = :id";
-        var count = (Long) entityManager.createQuery(query)
-                .setParameter("id", id)
-                .getSingleResult();
-
-        return count > 0;
-    }
-
-    @Override
-    public boolean isUserNameExists(String username) {
-        log.debug("Start searching trainer with username= " + username);
-        var query = "SELECT COUNT(t) FROM Trainer t WHERE t.username = :username";
-        var count = (Long) entityManager.createQuery(query)
-                .setParameter("username", username)
-                .getSingleResult();
-
-        return count > 0;
+        return query.getResultList();
     }
 }

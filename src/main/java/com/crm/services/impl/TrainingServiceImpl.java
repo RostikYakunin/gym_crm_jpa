@@ -1,6 +1,6 @@
 package com.crm.services.impl;
 
-import com.crm.models.training.Training;
+import com.crm.repositories.entities.Training;
 import com.crm.repositories.TrainingRepo;
 import com.crm.services.TrainingService;
 import lombok.RequiredArgsConstructor;

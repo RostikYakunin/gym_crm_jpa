@@ -42,7 +42,7 @@ public class TrainingDto {
     private LocalDateTime trainingDate;
 
     @NotNull(message = "Training duration is mandatory")
-    @DurationMin(minutes = 20)
-    @DurationMax(hours = 2)
+    @DurationMin(minutes = 20, message = "Min duration must be at least 20 minutes")
+    @DurationMax(hours = 2, message = "Max duration must be less than 2 hours")
     private Duration trainingDuration;
 }

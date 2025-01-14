@@ -8,5 +8,7 @@ public class GymSpringApp {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         System.out.println(context.getStartupDate());
+
+        //TODO: create tests
     }
 }

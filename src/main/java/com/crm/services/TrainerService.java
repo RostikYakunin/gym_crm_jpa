@@ -1,20 +1,8 @@
 package com.crm.services;
 
-import com.crm.models.training.TrainingType;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.Trainer;
+import com.crm.repositories.entities.TrainingType;
 
-public interface TrainerService {
-    Trainer findById(long id);
-
-    Trainer findByUsername(String username);
-
+public interface TrainerService extends UserService<Trainer> {
     Trainer save(String firstName, String lastName, TrainingType specialization);
-
-    Trainer save(Trainer trainer);
-
-    Trainer update(Trainer trainer);
-
-    Trainer changePassword(Trainer trainer, String password);
-
-    Trainer toggleActiveStatus(long trainerId);
 }

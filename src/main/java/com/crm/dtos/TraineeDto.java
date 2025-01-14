@@ -22,11 +22,9 @@ import java.util.Set;
 public class TraineeDto extends UserDto {
     private User user;
 
-    @NotNull(message = "Date of birth is mandatory")
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Address is mandatory")
     @Size(min = 5, max = 255, message = "Address must be between 5 and 255 characters")
     private String address;
 
