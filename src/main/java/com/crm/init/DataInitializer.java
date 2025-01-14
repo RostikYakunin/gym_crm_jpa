@@ -1,9 +1,9 @@
 package com.crm.init;
 
 import com.crm.config.AppConfig;
-import com.crm.models.training.Training;
-import com.crm.models.users.Trainee;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.Training;
+import com.crm.repositories.entities.Trainee;
+import com.crm.repositories.entities.Trainer;
 import com.crm.services.TraineeService;
 import com.crm.services.TrainerService;
 import com.crm.services.TrainingService;

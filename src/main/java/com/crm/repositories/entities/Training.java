@@ -1,7 +1,5 @@
-package com.crm.models.training;
+package com.crm.repositories.entities;
 
-import com.crm.models.users.Trainee;
-import com.crm.models.users.Trainer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,17 +43,4 @@ public class Training {
 
     @Column(name = "training_duration", nullable = false)
     private Duration trainingDuration;
-
-    @Override
-    public String toString() {
-        return "Training{" +
-                "id=" + id +
-                ", trainee=" + trainee.getId() +
-                ", trainer=" + trainer.getId() +
-                ", trainingName='" + trainingName + '\'' +
-                ", trainingType=" + trainingType.getName() +
-                ", trainingDate=" + trainingDate +
-                ", trainingDuration=" + trainingDuration +
-                '}';
-    }
 }

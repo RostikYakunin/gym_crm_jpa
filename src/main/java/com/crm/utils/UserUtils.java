@@ -1,9 +1,10 @@
 package com.crm.utils;
 
-import com.crm.models.users.User;
+import com.crm.repositories.entities.User;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.function.Function;
 
@@ -40,5 +41,19 @@ public class UserUtils {
 
         log.info("Password was successfully generated... ");
         return generator.generate(10);
+    }
+
+    public static String hashPassword(String password){
+        log.info("Started hashing password... ");
+        var hashedPass = BCrypt.hashpw(password, BCrypt.gensalt());
+        log.info("Hashing successfully completed... ");
+        return hashedPass;
+    }
+
+    public static boolean matchesPasswordHash (String newPassword, String passwordHash){
+        log.info("Started checking password and hash... ");
+        var result = BCrypt.checkpw(newPassword, passwordHash);
+        log.info("Checking successfully completed... ");
+        return result;
     }
 }

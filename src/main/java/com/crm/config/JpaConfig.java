@@ -52,7 +52,7 @@ public class JpaConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         var factory = new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource());
-        factory.setPackagesToScan("com.crm.models");
+        factory.setPackagesToScan("com.crm.repositories.entities");
         factory.setPersistenceUnitName("gym-crm");
         factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 

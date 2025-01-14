@@ -1,4 +1,4 @@
-package com.crm.models.users;
+package com.crm.repositories.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

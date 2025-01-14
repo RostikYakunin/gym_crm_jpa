@@ -1,6 +1,5 @@
-package com.crm.models.users;
+package com.crm.repositories.entities;
 
-import com.crm.models.training.Training;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -19,8 +18,7 @@ import java.util.Set;
 @Table(name = "trainees")
 @DynamicUpdate
 public class Trainee extends User {
-    @OneToOne
-    @MapsId
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -42,19 +40,6 @@ public class Trainee extends User {
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Training> trainings = new HashSet<>();
-
-    @Override
-    public String toString() {
-        return "Trainee{" +
-                "user.id=" + user.getId() +
-                ", firstname=" + user.getFirstName() +
-                ", lastname=" + user.getLastName() +
-                ", username=" + user.getUsername() +
-                ", password=" + user.getPassword() +
-                ", dateOfBirth=" + dateOfBirth +
-                ", address='" + address + '\'' +
-                '}';
-    }
 }
 
 

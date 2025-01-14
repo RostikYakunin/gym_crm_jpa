@@ -1,4 +1,4 @@
-package com.crm.models.training;
+package com.crm.repositories.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

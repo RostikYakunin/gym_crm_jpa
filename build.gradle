@@ -26,7 +26,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
-    //Java annotations
+    //Java EE annotations
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
     // Lombok
@@ -39,14 +39,17 @@ dependencies {
 
     // Common libraries
     implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'org.mindrot:jbcrypt:0.4'
 
-    // Dto mapper Mapstruct
+    // Dto mapper - Mapstruct
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     // JPA and Hibernate
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.hibernate:hibernate-core:6.6.4.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+    annotationProcessor 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
 
     // DB
     implementation 'org.postgresql:postgresql:42.6.0'
