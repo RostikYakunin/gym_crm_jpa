@@ -21,7 +21,7 @@ public class Training {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "training_id")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "trainee_id", nullable = false)

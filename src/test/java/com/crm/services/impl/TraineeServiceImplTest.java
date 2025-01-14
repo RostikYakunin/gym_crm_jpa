@@ -1,7 +1,7 @@
 package com.crm.services.impl;
 
 import com.crm.UnitTestBase;
-import com.crm.models.users.Trainee;
+import com.crm.repositories.entities.Trainee;
 import com.crm.repositories.TraineeRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +67,7 @@ class TraineeServiceImplTest extends UnitTestBase {
         when(traineeRepo.save(any(Trainee.class))).thenReturn(testTrainee);
 
         // When
-        var result = traineeService.save("John", "Doe", "testAddress", LocalDate.of(1998, 11, 11));
+        var result = traineeService.save("John", "Doe", "password","testAddress", LocalDate.of(1998, 11, 11));
 
         // Then
         assertEquals(expectedUserName, result.getUsername());

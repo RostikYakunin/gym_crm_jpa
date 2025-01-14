@@ -1,8 +1,8 @@
 package com.crm.services.impl;
 
 import com.crm.UnitTestBase;
-import com.crm.models.training.TrainingType;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.TrainingType;
+import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.TrainerRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,7 +85,7 @@ class TrainerServiceImplTest extends UnitTestBase {
         when(trainerRepo.save(any(Trainer.class))).thenReturn(testTrainer);
 
         // When
-        var result = trainerService.save("Alice", "Smith", TrainingType.FITNESS);
+        var result = trainerService.save("Alice", "Smith", "password", TrainingType.FITNESS);
 
         // Then
         assertEquals(expectedUserName, testTrainer.getUsername());

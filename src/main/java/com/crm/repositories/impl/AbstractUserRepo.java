@@ -34,7 +34,8 @@ public abstract class AbstractUserRepo<T extends User> implements UserRepo<T> {
     @Transactional
     public T save(T entity) {
         log.debug("Start saving entity... ");
-        if (entity.getId() != 0) {
+
+        if (entity.getId() != null) {
             log.debug("Start merging entity with id= " + entity.getId());
             return entityManager.merge(entity);
         }

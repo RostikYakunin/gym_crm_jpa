@@ -19,12 +19,13 @@ public class TrainerServiceImpl extends AbstractUserService<Trainer, TrainerRepo
     }
 
     @Override
-    public Trainer save(String firstName, String lastName, TrainingType specialization) {
+    public Trainer save(String firstName, String lastName, String password, TrainingType specialization) {
         log.info("Starting saving trainer using first and last names... ");
 
         var newTrainer = Trainer.builder()
                 .firstName(firstName)
                 .lastName(lastName)
+                .password(password)
                 .specialization(specialization)
                 .build();
 

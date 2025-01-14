@@ -17,12 +17,13 @@ public class TraineeServiceImpl extends AbstractUserService<Trainee, TraineeRepo
     }
 
     @Override
-    public Trainee save(String firstName, String lastName, String address, LocalDate dateOfBirth) {
+    public Trainee save(String firstName, String lastName, String password, String address, LocalDate dateOfBirth) {
         log.info("Starting saving trainee using first and last names... ");
 
         var newTrainee = Trainee.builder()
                 .firstName(firstName)
                 .lastName(lastName)
+                .password(password)
                 .address(address)
                 .dateOfBirth(dateOfBirth)
                 .build();

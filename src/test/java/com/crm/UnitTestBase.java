@@ -1,8 +1,8 @@
 package com.crm;
 
-import com.crm.models.training.Training;
-import com.crm.models.users.Trainee;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.Training;
+import com.crm.repositories.entities.Trainee;
+import com.crm.repositories.entities.Trainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;

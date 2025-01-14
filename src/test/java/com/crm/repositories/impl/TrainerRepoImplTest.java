@@ -1,7 +1,7 @@
 package com.crm.repositories.impl;
 
 import com.crm.UnitTestBase;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.Trainer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

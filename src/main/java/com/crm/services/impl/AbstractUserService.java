@@ -31,10 +31,8 @@ public abstract class AbstractUserService<T extends User, R extends UserRepo<T>>
                 entity,
                 repository::isUserNameExists
         );
-        var generatedPassword = UserUtils.generatePassword();
 
         entity.setUsername(uniqueUsername);
-        entity.setPassword(UserUtils.hashPassword(generatedPassword));
         entity.setActive(true);
 
         var savedTrainer = repository.save(entity);

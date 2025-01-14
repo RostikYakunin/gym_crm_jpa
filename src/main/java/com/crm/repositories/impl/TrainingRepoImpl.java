@@ -26,7 +26,7 @@ public class TrainingRepoImpl implements TrainingRepo {
     @Transactional
     public Training save(Training entity) {
         log.debug("Start saving training... ");
-        if (entity.getId() != 0) {
+        if (entity.getId() != null) {
             log.debug("Start merging training with id= " + entity.getId());
             return entityManager.merge(entity);
         }

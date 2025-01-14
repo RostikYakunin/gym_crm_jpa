@@ -1,7 +1,7 @@
 package com.crm.repositories.impl;
 
 import com.crm.UnitTestBase;
-import com.crm.models.users.Trainee;
+import com.crm.repositories.entities.Trainee;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
