@@ -1,8 +1,8 @@
 package com.crm.dtos;
 
+import com.crm.models.TrainingType;
 import com.crm.repositories.entities.Trainee;
 import com.crm.repositories.entities.Trainer;
-import com.crm.repositories.entities.TrainingType;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class TrainingDto {
-    private long id;
+    private Long id;
 
     @NotNull(message = "Trainee is mandatory")
     private Trainee trainee;

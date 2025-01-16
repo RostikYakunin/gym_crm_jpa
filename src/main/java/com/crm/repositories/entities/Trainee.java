@@ -21,7 +21,7 @@ import java.util.Set;
 @DynamicUpdate
 public class Trainee extends User {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "id")
     private User user;
 
     @Column(name = "date_of_birth")

@@ -1,9 +1,9 @@
 package com.crm.services.impl;
 
 import com.crm.UnitTestBase;
+import com.crm.models.TrainingType;
 import com.crm.repositories.TrainerRepo;
 import com.crm.repositories.entities.Trainer;
-import com.crm.repositories.entities.TrainingType;
 import com.crm.utils.UserUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

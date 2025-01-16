@@ -1,13 +1,13 @@
 package com.crm;
 
 import com.crm.config.TestConfig;
+import com.crm.models.TrainingType;
 import com.crm.repositories.TraineeRepo;
 import com.crm.repositories.TrainerRepo;
 import com.crm.repositories.TrainingRepo;
 import com.crm.repositories.entities.Trainee;
 import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.entities.Training;
-import com.crm.repositories.entities.TrainingType;
 import com.crm.repositories.impl.TraineeRepoImpl;
 import com.crm.repositories.impl.TrainerRepoImpl;
 import com.crm.repositories.impl.TrainingRepoImpl;
@@ -94,7 +94,7 @@ public abstract class DbTestBase {
         entityManager.createQuery("DELETE FROM Trainer").executeUpdate();
         entityManager.createQuery("DELETE FROM Trainee").executeUpdate();
 
-        entityManager.createNativeQuery("ALTER TABLE TRAININGS ALTER COLUMN training_id RESTART WITH 1").executeUpdate();
-        entityManager.createNativeQuery("ALTER TABLE USERS ALTER COLUMN user_id RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE TRAININGS ALTER COLUMN id RESTART WITH 1").executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE USERS ALTER COLUMN id RESTART WITH 1").executeUpdate();
     }
 }

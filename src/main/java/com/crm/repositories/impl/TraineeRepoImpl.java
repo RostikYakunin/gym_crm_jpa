@@ -1,9 +1,9 @@
 package com.crm.repositories.impl;
 
+import com.crm.models.TrainingType;
 import com.crm.repositories.TraineeRepo;
 import com.crm.repositories.entities.Trainee;
 import com.crm.repositories.entities.Training;
-import com.crm.repositories.entities.TrainingType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 

@@ -16,7 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "first_name", nullable = false, length = 50)

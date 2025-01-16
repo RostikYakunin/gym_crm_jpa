@@ -3,7 +3,7 @@ package com.crm;
 import com.crm.repositories.entities.Trainee;
 import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.entities.Training;
-import com.crm.repositories.entities.TrainingType;
+import com.crm.models.TrainingType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;

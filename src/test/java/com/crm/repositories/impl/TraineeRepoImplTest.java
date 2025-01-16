@@ -1,7 +1,7 @@
 package com.crm.repositories.impl;
 
 import com.crm.DbTestBase;
-import com.crm.repositories.entities.TrainingType;
+import com.crm.models.TrainingType;
 import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,8 +1,8 @@
 package com.crm.repositories;
 
+import com.crm.models.TrainingType;
 import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.entities.Training;
-import com.crm.repositories.entities.TrainingType;
 
 import java.time.LocalDate;
 import java.util.List;

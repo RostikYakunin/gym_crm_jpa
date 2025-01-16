@@ -1,5 +1,6 @@
 package com.crm.repositories.entities;
 
+import com.crm.models.TrainingType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 public class Training {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "training_id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -31,16 +32,16 @@ public class Training {
     @JoinColumn(name = "trainer_id", nullable = false)
     private Trainer trainer;
 
-    @Column(name = "training_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String trainingName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "training_type", nullable = false)
+    @Column(name = "type", nullable = false)
     private TrainingType trainingType;
 
-    @Column(name = "training_date", nullable = false)
+    @Column(name = "date", nullable = false)
     private LocalDateTime trainingDate;
 
-    @Column(name = "training_duration", nullable = false)
+    @Column(name = "duration", nullable = false)
     private Duration trainingDuration;
 }

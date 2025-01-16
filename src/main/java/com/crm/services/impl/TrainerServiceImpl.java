@@ -1,15 +1,11 @@
 package com.crm.services.impl;
 
-import com.crm.repositories.entities.TrainingType;
-import com.crm.repositories.entities.Trainer;
+import com.crm.models.TrainingType;
 import com.crm.repositories.TrainerRepo;
+import com.crm.repositories.entities.Trainer;
 import com.crm.services.TrainerService;
-import com.crm.utils.UserUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
