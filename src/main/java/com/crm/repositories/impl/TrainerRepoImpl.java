@@ -24,7 +24,7 @@ public class TrainerRepoImpl extends AbstractUserRepo<Trainer> implements Traine
     }
 
     @Override
-    public List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName, TrainingType trainingType) {
+    public List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeUserName, TrainingType trainingType) {
         var jpql = """
                 SELECT t FROM Training t
                 WHERE t.trainer.username = :trainerUsername
@@ -38,7 +38,7 @@ public class TrainerRepoImpl extends AbstractUserRepo<Trainer> implements Traine
         query.setParameter("trainerUsername", trainerUsername);
         query.setParameter("fromDate", fromDate != null ? fromDate.atStartOfDay() : null);
         query.setParameter("toDate", toDate != null ? toDate.atTime(23, 59, 59) : null);
-        query.setParameter("traineeName", traineeName);
+        query.setParameter("traineeName", traineeUserName);
         query.setParameter("trainingType", trainingType);
 
         return query.getResultList();

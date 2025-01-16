@@ -2,10 +2,8 @@ package com.crm.repositories.impl;
 
 import com.crm.repositories.TraineeRepo;
 import com.crm.repositories.entities.Trainee;
-import com.crm.repositories.entities.Trainer;
 import com.crm.repositories.entities.Training;
 import com.crm.repositories.entities.TrainingType;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +24,7 @@ public class TraineeRepoImpl extends AbstractUserRepo<Trainee> implements Traine
     }
 
     @Override
-    public List<Training> getTraineeTrainingsByCriteria(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerName, TrainingType trainingType) {
+    public List<Training> getTraineeTrainingsByCriteria(String traineeUsername, LocalDate fromDate, LocalDate toDate, String trainerUserName, TrainingType trainingType) {
         var jpql = """
                 SELECT t FROM Training t
                 WHERE t.trainee.username = :traineeUsername
@@ -40,29 +38,9 @@ public class TraineeRepoImpl extends AbstractUserRepo<Trainee> implements Traine
         query.setParameter("traineeUsername", traineeUsername);
         query.setParameter("fromDate", fromDate != null ? fromDate.atStartOfDay() : null);
         query.setParameter("toDate", toDate != null ? toDate.atTime(23, 59, 59) : null);
-        query.setParameter("trainerName", trainerName);
+        query.setParameter("trainerName", trainerUserName);
         query.setParameter("trainingType", trainingType);
 
         return query.getResultList();
-    }
-
-    @Override
-    @Transactional
-    public void updateTraineeTrainersList(String username, List<Trainer> trainers) {
-        findByUserName(username)
-                .map(
-                        trainee -> {
-                            trainee.getTrainers().clear();
-                            trainee.getTrainers().addAll(trainers);
-
-                            return entityManager.merge(trainee);
-                        }
-                ).orElseThrow(
-                        () -> {
-                            log.error("Trainee with username=" + username + " not found");
-                            return new IllegalArgumentException("Trainee with username " + username + " not found");
-                        }
-                );
-
     }
 }

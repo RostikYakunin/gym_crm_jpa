@@ -1,7 +1,10 @@
 package com.crm.repositories.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -11,7 +14,6 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -27,15 +29,6 @@ public class Trainee extends User {
 
     @Column(name = "address")
     private String address;
-
-    @ManyToMany
-    @JoinTable(
-            name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainee_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id")
-    )
-    @Builder.Default
-    private Set<Trainer> trainers = new HashSet<>();
 
     @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

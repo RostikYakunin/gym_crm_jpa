@@ -66,26 +66,45 @@ class UserUtilsTest {
     }
 
     @Test
-    @DisplayName("generatePassword should generate password of correct length")
-    void generatePassword_ShouldGeneratePasswordOfCorrectLength() {
+    @DisplayName("Hash password should generate a non-empty and different hash")
+    void hashPassword_ShouldGenerateValidHash() {
+        // Given
+        var password = "SecurePassword123";
+
         // When
-        String password = UserUtils.generatePassword();
+        var hashedPassword = UserUtils.hashPassword(password);
 
         // Then
-        assertNotNull(password);
-        assertEquals(10, password.length());
+        assertNotNull(hashedPassword);
+        assertNotEquals(hashedPassword, password);
     }
 
     @Test
-    @DisplayName("generatePassword should generate unique passwords on multiple calls")
-    void generatePassword_ShouldGenerateUniquePasswords() {
+    @DisplayName("Matches password should return true for correct password")
+    void matchesPasswordHash_ShouldReturnTrueForCorrectPassword() {
+        // Given
+        var password = "SecurePassword123";
+        var hashedPassword = UserUtils.hashPassword(password);
+
         // When
-        String password1 = UserUtils.generatePassword();
-        String password2 = UserUtils.generatePassword();
+        var result = UserUtils.matchesPasswordHash(password, hashedPassword);
 
         // Then
-        assertNotNull(password1);
-        assertNotNull(password2);
-        assertNotEquals(password1, password2);
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("Matches password should return false for incorrect password")
+    void matchesPasswordHash_ShouldReturnFalseForIncorrectPassword() {
+        // Given
+        var password = "SecurePassword123";
+        var hashedPassword = UserUtils.hashPassword(password);
+        var wrongPassword = "WrongPassword456";
+
+        // When
+        var result = UserUtils.matchesPasswordHash(wrongPassword, hashedPassword);
+
+        // Then
+        assertFalse(result);
     }
 }

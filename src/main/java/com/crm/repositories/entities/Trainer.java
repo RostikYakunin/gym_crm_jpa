@@ -1,16 +1,14 @@
 package com.crm.repositories.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @Entity
@@ -24,8 +22,4 @@ public class Trainer extends User {
     @Enumerated(EnumType.STRING)
     @Column(name = "specialization", nullable = false)
     private TrainingType specialization;
-
-    @ManyToMany(mappedBy = "trainers")
-    @Builder.Default
-    private Set<Trainee> trainees = new HashSet<>();
 }

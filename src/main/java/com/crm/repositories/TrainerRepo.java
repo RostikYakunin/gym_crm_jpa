@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TrainerRepo extends UserRepo<Trainer> {
-    List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeName, TrainingType trainingType);
+    List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeUserName, TrainingType trainingType);
 
     List<Trainer> getUnassignedTrainersByTraineeUsername(String traineeUsername);
 }

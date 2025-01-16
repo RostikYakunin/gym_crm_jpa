@@ -6,10 +6,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Slf4j
+@Repository
 public abstract class AbstractUserRepo<T extends User> implements UserRepo<T> {
     @PersistenceContext
     protected EntityManager entityManager;

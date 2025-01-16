@@ -1,172 +1,180 @@
 package com.crm.repositories.impl;
 
-import com.crm.UnitTestBase;
-import com.crm.repositories.entities.Trainer;
-import org.apache.commons.lang3.NotImplementedException;
-import org.junit.jupiter.api.AfterEach;
+import com.crm.DbTestBase;
+import com.crm.repositories.entities.TrainingType;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-class TrainerRepoImplTest extends UnitTestBase {
-    @Mock
-    private Map<Long, Trainer> mockDatabase;
-
-    @InjectMocks
-    private TrainerRepoImpl trainerRepo;
-
-    private Trainer testTrainer;
+public class TrainerRepoImplTest extends DbTestBase {
 
     @BeforeEach
-    void setUp() {
-        testTrainer = Trainer.builder()
-                .id(1L)
-                .username("testTrainer")
-                .build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        testTrainer = null;
+    void init() {
+        trainerRepo.save(testTrainer);
     }
 
     @Test
-    @DisplayName("findById should return trainer when exists")
-    void findById_ShouldReturnTrainer_WhenExists() {
-        // Given
-        when(mockDatabase.get(anyLong())).thenReturn(testTrainer);
-
-        // When
-        var result = trainerRepo.findById(1L);
+    @DisplayName("Save a trainer and verify it is persisted")
+    void saveTrainer_ShouldPersistTrainer() {
+        // Given - When
+        var savedTrainer = trainerRepo.save(testTrainer);
 
         // Then
-        assertTrue(result.isPresent());
+        assertNotNull(savedTrainer.getId());
+        assertEquals("testName1.testLastName1", savedTrainer.getUsername());
+    }
+
+    @Test
+    @DisplayName("Find a trainer by existing ID and verify it is returned")
+    void findTrainerById_WhenIdExists_ShouldReturnTrainer() {
+        // Given
+        trainerRepo.save(testTrainer);
+
+        // When
+        var foundTrainer = trainerRepo.findById(testTrainer.getId());
+
+        // Then
+        assertTrue(foundTrainer.isPresent());
+        assertEquals("testName1.testLastName1", foundTrainer.get().getUsername());
+    }
+
+    @Test
+    @DisplayName("Find a trainer by non-existing ID and verify empty result")
+    void findTrainerById_WhenIdDoesNotExist_ShouldReturnEmptyOptional() {
+        // Given - When
+        var foundTrainer = trainerRepo.findById(999L);
+
+        // Then
+        assertFalse(foundTrainer.isPresent());
+    }
+
+    @Test
+    @DisplayName("Update a trainer and verify the changes are saved")
+    void updateTrainer_ShouldSaveUpdatedTrainer() {
+        // Given
+        trainerRepo.save(testTrainer);
+        testTrainer.setUsername("NewTrainerName");
+
+        // When
+        var updatedTrainer = trainerRepo.update(testTrainer);
+
+        // Then
+        assertEquals("NewTrainerName", updatedTrainer.getUsername());
+    }
+
+    @Test
+    @DisplayName("Delete a trainer and verify it is removed")
+    void deleteTrainer_ShouldRemoveTrainer() {
+        // Given
+        trainerRepo.save(testTrainer);
+
+        // When
+        trainerRepo.delete(testTrainer);
+
+        // Then
+        var deletedTrainer = trainerRepo.findById(testTrainer.getId());
+        assertFalse(deletedTrainer.isPresent());
+    }
+
+    @Test
+    @DisplayName("Check if trainer exists by ID and verify true is returned")
+    void existsById_WhenIdExists_ShouldReturnTrue() {
+        // Given
+        trainerRepo.save(testTrainer);
+
+        // When
+        var result = trainerRepo.isExistsById(testTrainer.getId());
+
+        // Then
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("Check if trainer exists by ID and verify false is returned")
+    void existsById_WhenIdDoesNotExist_ShouldReturnFalse() {
+        // Given - When
+        var result = trainerRepo.isExistsById(999L);
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("Get trainer trainings by criteria and verify result")
+    void getTrainerTrainingsByCriteria_ShouldReturnCorrectTrainings() {
+        // Given
+        traineeRepo.save(testTrainee);
+        trainingRepo.save(testTraining);
+
+        // When
+        var trainings = trainerRepo.getTrainerTrainingsByCriteria(
+                testTrainer.getUsername(), LocalDate.now(), null, testTrainee.getFirstName(), TrainingType.FITNESS
+        );
+
+        // Then
+        assertFalse(trainings.isEmpty());
+        assertEquals(1, trainings.size());
+        assertEquals(testTraining.getTrainingName(), trainings.get(0).getTrainingName());
+    }
+
+    @Test
+    @DisplayName("Get unassigned trainers by trainee username and verify result")
+    void getUnassignedTrainersByTraineeUsername_ShouldReturnCorrectTrainers() {
+        // Given
+        traineeRepo.save(testTrainee);
+        traineeRepo.save(testTrainee);
+
+        // When
+        var trainers = trainerRepo.getUnassignedTrainersByTraineeUsername(testTrainee.getUsername());
+
+        // Then
+        assertFalse(trainers.isEmpty());
+        assertEquals(testTrainer.getUsername(), trainers.get(0).getUsername());
+    }
+
+    @Test
+    @DisplayName("isUserNameExists - should return true when entity was found")
+    void isUserNameExists_ShouldReturnTrue_WhenEntityWasFound() {
+        // Given - When
+        var result = trainerRepo.isUserNameExists("testName1.testLastName1");
+
+        // Then
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("isUserNameExists - should return false when entity was not found")
+    void isUserNameExists_ShouldReturnFalse_WhenEntityWasNotFound() {
+        // Given - When
+        var result = trainerRepo.isUserNameExists("unknown1");
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("findByUserName - should return entity when it was found")
+    void findByUserName_ShouldReturnEntity_WhenEntityWasFound() {
+        // Given - When
+        var result = trainerRepo.findByUserName("testName1.testLastName1");
+
+        // Then
+        assertNotNull(result.get());
         assertEquals(testTrainer, result.get());
-        verify(mockDatabase, times(1)).get(idArgumentCaptor.capture());
     }
 
     @Test
-    @DisplayName("findById should return empty optional when trainer does not exist")
-    void findById_ShouldReturnEmptyOptional_WhenNotExists() {
-        // Given
-        when(mockDatabase.get(anyLong())).thenReturn(null);
-
-        // When
-        var result = trainerRepo.findById(testTrainer.getId());
-
-        // Then
-        assertFalse(result.isPresent());
-        verify(mockDatabase, times(1)).get(testTrainer.getId());
-    }
-
-    @Test
-    @DisplayName("save should save the trainer")
-    void save_ShouldSaveTrainer() {
-        // Given
-        when(mockDatabase.put(anyLong(), any(Trainer.class))).thenReturn(testTrainer);
-
-        // When
-        var result = trainerRepo.save(testTrainer);
-
-        // Then
-        assertNotNull(result);
-        verify(mockDatabase, times(1)).put(
-                idArgumentCaptor.capture(),
-                trainerArgumentCaptor.capture()
-        );
-    }
-
-    @Test
-    @DisplayName("update should update the trainer")
-    void update_ShouldUpdateTrainer() {
-        // Given
-        when(mockDatabase.put(anyLong(), any(Trainer.class))).thenReturn(testTrainer);
-
-        // When
-        var result = trainerRepo.update(testTrainer);
-
-        // Then
-        assertEquals(testTrainer, result);
-        verify(mockDatabase, times(1)).put(
-                idArgumentCaptor.capture(),
-                trainerArgumentCaptor.capture()
-        );
-    }
-
-    @Test
-    @DisplayName("deleteById should throw exception")
-    void deleteById_ShouldThrowException() {
+    @DisplayName("findByUserName - should throw exception when it was not found")
+    void findByUserName_ShouldThrowException_WhenEntityWasNotFound() {
         // Given - When - Then
         assertThrows(
-                NotImplementedException.class,
-                () -> trainerRepo.delete(testTrainer),
-                "Method delete is not implemented yet... "
+                NoResultException.class,
+                () -> trainerRepo.findByUserName("unknown")
         );
     }
-
-    @Test
-    @DisplayName("isExistsById should return true when trainer exists")
-    void isExistsById_ShouldReturnTrue_WhenTrainerExists() {
-        // Given
-        when(mockDatabase.containsKey(anyLong())).thenReturn(true);
-
-        // When
-        var result = trainerRepo.isExistsById(testTrainer.getId());
-
-        // Then
-        assertTrue(result);
-        verify(mockDatabase, times(1)).containsKey(idArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("isExistsById should return false when trainer does not exist")
-    void isExistsById_ShouldReturnFalse_WhenTrainerNotExists() {
-        // Given
-        when(mockDatabase.containsKey(anyLong())).thenReturn(false);
-
-        // When
-        var result = trainerRepo.isExistsById(testTrainer.getId());
-
-        // Then
-        assertFalse(result);
-        verify(mockDatabase, times(1)).containsKey(idArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("isUserNameExists should return true when username exists")
-    void isUserNameExists_ShouldReturnTrue_WhenUsernameExists() {
-        // Given
-        when(mockDatabase.values()).thenReturn(List.of(testTrainer));
-
-        // When
-        var result = trainerRepo.isUserNameExists(testTrainer.getUsername());
-
-        // Then
-        assertTrue(result);
-        verify(mockDatabase, times(1)).values();
-    }
-
-    @Test
-    @DisplayName("isUserNameExists should return false when username does not exist")
-    void isUserNameExists_ShouldReturnFalse_WhenUsernameNotExists() {
-        // Given
-        when(mockDatabase.values()).thenReturn(Collections.emptyList());
-
-        // When
-        var result = trainerRepo.isUserNameExists(testTrainer.getUsername());
-
-        // Then
-        assertFalse(result);
-        verify(mockDatabase, times(1)).values();
-    }
-
 }

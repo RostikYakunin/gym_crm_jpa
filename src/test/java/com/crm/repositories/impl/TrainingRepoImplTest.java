@@ -2,6 +2,7 @@ package com.crm.repositories.impl;
 
 import com.crm.DbTestBase;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenTraining_whenSave_thenTrainingIsPersisted() {
+    @DisplayName("Save a training and verify it is persisted")
+    void saveTraining_ShouldPersistTraining() {
         // Given - When
         var savedTraining = trainingRepo.save(testTraining);
 
@@ -24,7 +26,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenExistingTrainingId_whenFindById_thenTrainingIsReturned() {
+    @DisplayName("Find a training by existing ID and verify it is returned")
+    void findTrainingById_WhenIdExists_ShouldReturnTraining() {
         // Given
         trainingRepo.save(testTraining);
 
@@ -37,7 +40,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenNonExistingTrainingId_whenFindById_thenEmptyOptionalIsReturned() {
+    @DisplayName("Find a training by non-existing ID and verify empty result")
+    void findTrainingById_WhenIdDoesNotExist_ShouldReturnEmptyOptional() {
         // Given - When
         var foundTraining = trainingRepo.findById(999L);
 
@@ -46,7 +50,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenTraining_whenUpdate_thenTrainingIsUpdated() {
+    @DisplayName("Update a training and verify the changes are saved")
+    void updateTraining_ShouldSaveUpdatedTraining() {
         // Given
         trainingRepo.save(testTraining);
         testTraining.setTrainingName("newTrainingName");
@@ -59,7 +64,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenTraining_whenDelete_thenTrainingIsRemoved() {
+    @DisplayName("Delete a training and verify it is removed")
+    void deleteTraining_ShouldRemoveTraining() {
         // Given
         trainingRepo.save(testTraining);
 
@@ -72,7 +78,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenExistingTrainingId_whenIsExistsById_thenReturnsTrue() {
+    @DisplayName("Check if training exists by ID and verify true is returned")
+    void existsById_WhenIdExists_ShouldReturnTrue() {
         // Given
         trainingRepo.save(testTraining);
 
@@ -84,7 +91,8 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    void givenNonExistingTrainingId_whenIsExistsById_thenReturnsFalse() {
+    @DisplayName("Check if training exists by ID and verify false is returned")
+    void existsById_WhenIdDoesNotExist_ShouldReturnFalse() {
         // Given - When
         var result = trainingRepo.isExistsById(999L);
 
