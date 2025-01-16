@@ -1,6 +1,6 @@
 package com.crm.init;
 
-import com.crm.config.AppConfig;
+import com.crm.config.TestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ class DataInitializerTest {
 
     @BeforeEach
     void init() {
-        var context = new AnnotationConfigApplicationContext(AppConfig.class);
+        var context = new AnnotationConfigApplicationContext(TestConfig.class);
         dataInitializer = context.getBean("dataInitializer", DataInitializer.class);
     }
 
@@ -28,12 +28,7 @@ class DataInitializerTest {
     @Test
     @DisplayName("Should not throw exception while entities initialization")
     void initializeData_shouldNotThrowException_WhileInitializationFiles() {
-        // Given
-        ReflectionTestUtils.setField(dataInitializer, "traineeDataFilePath", "src/main/resources/init/trainee-data.json");
-        ReflectionTestUtils.setField(dataInitializer, "trainerDataFilePath", "src/main/resources/init/trainer-data.json");
-        ReflectionTestUtils.setField(dataInitializer, "trainingDataFilePath", "src/main/resources/init/training-data.json");
-
-        // When - Then
+        // Given - When - Then
         assertDoesNotThrow(
                 dataInitializer::initializeData,
                 "Something went wrong with file deserialization"
@@ -44,8 +39,6 @@ class DataInitializerTest {
     @DisplayName("Should throw exception while entities initialization")
     void initializeData_shouldThrowException_WhileInitializationFiles() {
         // Given
-        ReflectionTestUtils.setField(dataInitializer, "traineeDataFilePath", "src/main/resources/init/trainee-data.json");
-        ReflectionTestUtils.setField(dataInitializer, "trainerDataFilePath", "src/main/resources/init/trainer-data.json");
         ReflectionTestUtils.setField(dataInitializer, "trainingDataFilePath", "wrong/pass/resources/init/training-data.json");
 
         // When - Then

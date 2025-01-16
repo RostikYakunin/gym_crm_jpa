@@ -1,9 +1,9 @@
 package com.crm.init;
 
 import com.crm.config.AppConfig;
-import com.crm.models.training.Training;
-import com.crm.models.users.Trainee;
-import com.crm.models.users.Trainer;
+import com.crm.repositories.entities.Trainee;
+import com.crm.repositories.entities.Trainer;
+import com.crm.repositories.entities.Training;
 import com.crm.services.TraineeService;
 import com.crm.services.TrainerService;
 import com.crm.services.TrainingService;
@@ -28,10 +28,8 @@ import java.util.List;
 public class DataInitializer {
     @Value("${data.file.trainee_data}")
     private String traineeDataFilePath;
-
     @Value("${data.file.trainer_data}")
     private String trainerDataFilePath;
-
     @Value("${data.file.training_data}")
     private String trainingDataFilePath;
 
@@ -43,19 +41,19 @@ public class DataInitializer {
     @PostConstruct
     public void initializeData() {
         try {
-            log.info("TraineeDataBase`s initialization started ...");
+            log.info("TraineeData`s initialization started ...");
             initializeTraineeData();
-            log.info("TraineeDataBase`s initialization successfully completed");
+            log.info("TraineeData`s initialization successfully completed");
 
-            log.info("TrainerDataBase`s initialization started ...");
+            log.info("TrainerData`s initialization started ...");
             initializeTrainerData();
-            log.info("TrainerDataBase`s initialization successfully completed");
+            log.info("TrainerData`s initialization successfully completed");
 
-            log.info("TrainingDataBase`s initialization started ...");
+            log.info("TrainingData`s initialization started ...");
             initializeTrainingData();
-            log.info("TrainingDataBase`s initialization successfully completed");
+            log.info("TrainingData`s initialization successfully completed");
         } catch (Exception e) {
-            log.error("DataBase initialization failed ...");
+            log.error("Data initialization failed ...");
             throw new RuntimeException("Something went wrong with file deserialization", e);
         }
     }

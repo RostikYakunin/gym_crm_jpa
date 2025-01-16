@@ -1,67 +1,62 @@
 package com.crm.repositories.impl;
 
-
-import com.crm.models.users.Trainer;
-import com.crm.models.users.User;
+import com.crm.models.TrainingType;
 import com.crm.repositories.TrainerRepo;
-import lombok.RequiredArgsConstructor;
+import com.crm.repositories.entities.Trainer;
+import com.crm.repositories.entities.Training;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 @Slf4j
-public class TrainerRepoImpl implements TrainerRepo {
-    private static long idCounter = 1;
-    private final Map<Long, Trainer> trainerDataBase;
-
+public class TrainerRepoImpl extends AbstractUserRepo<Trainer> implements TrainerRepo {
     @Override
-    public Optional<Trainer> findById(long id) {
-        log.debug("Trying to find trainer by id=" + id);
-        return Optional.ofNullable(trainerDataBase.get(id));
+    protected Class<Trainer> getEntityClass() {
+        return Trainer.class;
     }
 
     @Override
-    public Trainer save(Trainer trainer) {
-        trainer.setUserId(generateId());
-        log.debug("Trying to save trainer by id=" + trainer.getUserId());
-
-        trainerDataBase.put(trainer.getUserId(), trainer);
-        return trainer;
-    }
-
-    private long generateId() {
-        return idCounter++;
+    protected String getEntityClassName() {
+        return Trainer.class.getSimpleName();
     }
 
     @Override
-    public Trainer update(Trainer trainer) {
-        log.debug("Trying to update trainer by id=" + trainer.getUserId());
-        return trainerDataBase.put(trainer.getUserId(), trainer);
+    public List<Training> getTrainerTrainingsByCriteria(String trainerUsername, LocalDate fromDate, LocalDate toDate, String traineeUserName, TrainingType trainingType) {
+        var jpql = """
+                SELECT t FROM Training t
+                WHERE t.trainer.username = :trainerUsername
+                AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
+                AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+                AND (:traineeName IS NULL OR t.trainee.firstName LIKE CONCAT('%', :traineeName, '%') OR t.trainee.lastName LIKE CONCAT('%', :traineeName, '%'))
+                AND (:trainingType IS NULL OR t.trainingType = :trainingType)
+                """;
+
+        var query = entityManager.createQuery(jpql, Training.class);
+        query.setParameter("trainerUsername", trainerUsername);
+        query.setParameter("fromDate", fromDate != null ? fromDate.atStartOfDay() : null);
+        query.setParameter("toDate", toDate != null ? toDate.atTime(23, 59, 59) : null);
+        query.setParameter("traineeName", traineeUserName);
+        query.setParameter("trainingType", trainingType);
+
+        return query.getResultList();
     }
 
     @Override
-    public void delete(Trainer trainer) {
-        log.error("Method delete is not implemented yet... ");
-        throw new NotImplementedException("Method delete is not implemented yet... ");
-    }
+    public List<Trainer> getUnassignedTrainersByTraineeUsername(String traineeUsername) {
+        String jpql = """
+                 SELECT tr FROM Trainer tr
+                 WHERE tr.id NOT IN (
+                   SELECT t.trainer.id FROM Training t
+                   WHERE t.trainee.username = :traineeUsername
+                )
+                """;
 
-    @Override
-    public boolean isExistsById(long id) {
-        log.debug("Trying to check if exists trainer with id=" + id);
-        return trainerDataBase.containsKey(id);
-    }
+        var query = entityManager.createQuery(jpql, Trainer.class);
+        query.setParameter("traineeUsername", traineeUsername);
 
-    @Override
-    public boolean isUserNameExists(String username) {
-        log.debug("Trying to check if trainer with username=" + username + " is existed");
-        return trainerDataBase.values()
-                .stream()
-                .map(User::getUsername)
-                .anyMatch(un -> un.equals(username));
+        return query.getResultList();
     }
 }

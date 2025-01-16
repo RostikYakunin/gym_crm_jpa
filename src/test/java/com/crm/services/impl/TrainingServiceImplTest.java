@@ -1,9 +1,7 @@
 package com.crm.services.impl;
 
 import com.crm.UnitTestBase;
-import com.crm.config.AppConfig;
-import com.crm.models.training.Training;
-import com.crm.models.training.TrainingType;
+import com.crm.repositories.entities.Training;
 import com.crm.repositories.TrainingRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

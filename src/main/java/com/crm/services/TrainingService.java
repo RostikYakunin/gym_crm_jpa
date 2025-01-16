@@ -1,6 +1,6 @@
 package com.crm.services;
 
-import com.crm.models.training.Training;
+import com.crm.repositories.entities.Training;
 
 public interface TrainingService {
     Training findById(long id);
