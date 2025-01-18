@@ -21,36 +21,32 @@ public class TraineeRepoImplTest extends DbTestBase {
     @Test
     @DisplayName("Save a trainee and verify it is persisted")
     void saveTrainee_ShouldPersistTrainee() {
-        // Given - When
+        // Given
+        var expectedUserName = "testName.testLastName";
+
+        //When
         var savedTrainee = traineeRepo.save(testTrainee);
 
         // Then
         assertNotNull(savedTrainee.getId());
-        assertEquals("testName.testLastName", savedTrainee.getUsername());
+        assertEquals(expectedUserName, savedTrainee.getUsername());
     }
 
     @Test
     @DisplayName("Find a trainee by existing ID and verify it is returned")
     void findTraineeById_WhenIdExists_ShouldReturnTrainee() {
         // Given
-        traineeRepo.save(testTrainee);
+        var expectedUserName = "testName.testLastName";
+        var savedId = traineeRepo.save(testTrainee);
 
         // When
-        var foundTrainee = traineeRepo.findById(1);
+        var notEmptyResult = traineeRepo.findById(savedId.getId());
+        var emptyResult = traineeRepo.findById(100000L);
 
         // Then
-        assertTrue(foundTrainee.isPresent());
-        assertEquals("testName.testLastName", foundTrainee.get().getUsername());
-    }
-
-    @Test
-    @DisplayName("Find a trainee by non-existing ID and verify empty result")
-    void findTraineeById_WhenIdDoesNotExist_ShouldReturnEmptyOptional() {
-        // Given - When
-        var foundTrainee = traineeRepo.findById(999L);
-
-        // Then
-        assertFalse(foundTrainee.isPresent());
+        assertTrue(notEmptyResult.isPresent());
+        assertEquals(expectedUserName, notEmptyResult.get().getUsername());
+        assertTrue(emptyResult.isEmpty());
     }
 
     @Test
@@ -85,23 +81,15 @@ public class TraineeRepoImplTest extends DbTestBase {
     @DisplayName("Check if trainee exists by ID and verify true is returned")
     void existsById_WhenIdExists_ShouldReturnTrue() {
         // Given
-        traineeRepo.save(testTrainee);
+        var savedTrainee = traineeRepo.save(testTrainee);
 
         // When
-        var result = traineeRepo.isExistsById(testTrainee.getId());
+        var trueResult = traineeRepo.isExistsById(savedTrainee.getId());
+        var wrongResult = traineeRepo.isExistsById(1000L);
 
         // Then
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("Check if trainee exists by ID and verify false is returned")
-    void existsById_WhenIdDoesNotExist_ShouldReturnFalse() {
-        // Given - When
-        var result = traineeRepo.isExistsById(999L);
-
-        // Then
-        assertFalse(result);
+        assertTrue(trueResult);
+        assertFalse(wrongResult);
     }
 
     @Test
@@ -123,23 +111,15 @@ public class TraineeRepoImplTest extends DbTestBase {
     }
 
     @Test
-    @DisplayName("isUserNameExists - should return true when entity was found")
+    @DisplayName("isUserNameExists - should return result when entity was found")
     void isUserNameExists_ShouldReturnTrue_WhenEntityWasFound() {
         // Given - When
-        var result = traineeRepo.isUserNameExists("testName.testLastName");
+        var positiveResult = traineeRepo.isUserNameExists("testName.testLastName");
+        var negativeResult = traineeRepo.isUserNameExists("unknown");
 
         // Then
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("isUserNameExists - should return false when entity was not found")
-    void isUserNameExists_ShouldReturnFalse_WhenEntityWasNotFound() {
-        // Given - When
-        var result = traineeRepo.isUserNameExists("unknown");
-
-        // Then
-        assertFalse(result);
+        assertTrue(positiveResult);
+        assertFalse(negativeResult);
     }
 
     @Test

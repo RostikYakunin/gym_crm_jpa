@@ -16,10 +16,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "trainers")
 @DynamicUpdate
 public class Trainer extends User {
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id")
-    private User user;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "specialization", nullable = false)
     private TrainingType specialization;

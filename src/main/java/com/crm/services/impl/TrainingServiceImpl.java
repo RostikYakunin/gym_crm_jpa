@@ -1,8 +1,9 @@
 package com.crm.services.impl;
 
-import com.crm.repositories.entities.Training;
 import com.crm.repositories.TrainingRepo;
+import com.crm.repositories.entities.Training;
 import com.crm.services.TrainingService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class TrainingServiceImpl implements TrainingService {
     private final TrainingRepo trainingRepo;
 
@@ -22,10 +24,6 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public Training save(Training training) {
         log.info("Saving training: {}", training);
-
-        var savedTraining = trainingRepo.save(training);
-        log.info("Training with id={} was successfully saved", savedTraining.getId());
-
-        return savedTraining;
+        return trainingRepo.save(training);
     }
 }

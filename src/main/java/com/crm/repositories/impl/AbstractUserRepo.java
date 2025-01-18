@@ -4,7 +4,6 @@ import com.crm.repositories.UserRepo;
 import com.crm.repositories.entities.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -33,15 +32,7 @@ public abstract class AbstractUserRepo<T extends User> implements UserRepo<T> {
     }
 
     @Override
-    @Transactional
     public T save(T entity) {
-        log.debug("Start saving entity... ");
-
-        if (entity.getId() != null) {
-            log.debug("Start merging entity with id= " + entity.getId());
-            return entityManager.merge(entity);
-        }
-
         log.debug("Start persisting new entity... ");
         entityManager.persist(entity);
         return entity;
@@ -50,12 +41,16 @@ public abstract class AbstractUserRepo<T extends User> implements UserRepo<T> {
     @Override
     public T update(T entity) {
         log.debug("Start updating entity... ");
-        return save(entity);
+        return entityManager.merge(entity);
     }
 
     @Override
     public void delete(T entity) {
         log.debug("Start deleting entity... ");
+        if (!entityManager.contains(entity)) {
+            entity = entityManager.merge(entity);
+        }
+
         entityManager.remove(entity);
     }
 

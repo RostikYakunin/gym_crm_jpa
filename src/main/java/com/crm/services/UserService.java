@@ -11,7 +11,9 @@ public interface UserService<T> {
 
     boolean changePassword(T entity, String inputtedPassword, String newPassword);
 
-    boolean toggleActiveStatus(long id);
+    boolean activateStatus(long id);
+
+    boolean deactivateStatus(long id);
 
     boolean isUsernameAndPasswordMatching(String username, String inputtedPassword);
 }

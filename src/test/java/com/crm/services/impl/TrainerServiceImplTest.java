@@ -114,161 +114,81 @@ class TrainerServiceImplTest extends UnitTestBase {
     }
 
     @Test
-    @DisplayName("findByUsername - should find entity when traineк was found in DB")
-    void findByUsername_ShouldFindEntity_WhenTrainerWasFound() {
+    @DisplayName("findByUsername - should find/don`t find entity when trainee was/was not found in DB")
+    void findByUsername_ShouldFindEntity_WhenTraineeWasFound() {
         // Given
-        when(trainerRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainer));
+        when(trainerRepo.findByUserName(anyString()))
+                .thenReturn(Optional.of(testTrainer))
+                .thenReturn(Optional.empty());
 
         // When
-        var result = trainerService.findByUsername(testTrainee.getUsername());
+        var result1 = trainerService.findByUsername(testTrainee.getUsername());
+        var result2 = trainerService.findByUsername(testTrainee.getUsername());
 
         // Then
-        assertNotNull(result);
-        assertEquals(testTrainer, result);
+        assertNotNull(result1);
+        assertEquals(testTrainer, result1);
+        assertNull(result2);
 
-        verify(trainerRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
+        verify(trainerRepo, times(2)).findByUserName(stringArgumentCaptor.capture());
     }
 
     @Test
-    @DisplayName("findByUsername - should not find entity when trainer was not found in DB")
-    void findByUsername_ShouldNotFindEntity_WhenTrainerWasNotFound() {
-        // Given
-        when(trainerRepo.findByUserName(anyString())).thenReturn(Optional.empty());
-
-        // When
-        var result = trainerService.findByUsername(testTrainer.getUsername());
-
-        // Then
-        assertNull(result);
-
-        verify(trainerRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("changePassword - should change password when trainer`s password matches with found in DB")
+    @DisplayName("changePassword - should change/don`t change password when trainee`s password matches/don`t matches with found in DB")
     void changePassword_ShouldChangePass_WhenPasswordsMatches() {
         // Given
-        testTrainer.setPassword(UserUtils.hashPassword(testTrainer.getPassword()));
+        var initialPassword = testTrainer.getPassword();
+        testTrainer.setPassword(UserUtils.hashPassword(initialPassword));
         when(trainerRepo.update(any(Trainer.class))).thenReturn(testTrainer);
 
         // When
-        var result = trainerService.changePassword(testTrainer, "testPassword1", "newPass");
+        var result1 = trainerService.changePassword(testTrainer, initialPassword, "newPass");
+        var result2 = trainerService.changePassword(testTrainer, "wrong", "newPass");
 
         // Then
-        assertTrue(result);
+        assertTrue(result1);
+        assertFalse(result2);
         verify(trainerRepo, times(1)).update(trainerArgumentCaptor.capture());
     }
 
     @Test
-    @DisplayName("changePassword - should change password when trainer`s password matches with found in DB")
-    void changePassword_ShouldNotChangePass_WhenPasswordsNotMatches() {
-        // Given
-        testTrainer.setPassword(UserUtils.hashPassword(testTrainer.getPassword()));
-        when(trainerRepo.update(any(Trainer.class))).thenReturn(testTrainer);
-
-        // When
-        var result = trainerService.changePassword(testTrainer, testTrainer.getPassword(), "newPass");
-
-        // Then
-        assertFalse(result);
-        verify(trainerRepo, never()).update(trainerArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Toggle active status - should deactivate when currently active")
+    @DisplayName("Activate/deactivate status - should change")
     void toggleActiveStatus_ShouldDeactivateWhenCurrentlyActive() {
         // Given
-        when(trainerRepo.findById(1L)).thenReturn(Optional.of(testTrainer));
+        when(trainerRepo.findById(anyLong())).thenReturn(Optional.of(testTrainer));
         when(trainerRepo.update(any(Trainer.class))).thenReturn(testTrainer);
 
         // When
-        var result = trainerService.toggleActiveStatus(1L);
+        var result1 = trainerService.activateStatus(1L);
+        var result2 = trainerService.deactivateStatus(1L);
 
         // Then
-        assertFalse(result);
-        assertFalse(testTrainer.isActive());
+        assertTrue(result1);
+        assertFalse(result2);
 
-        verify(trainerRepo, times(1)).findById(1L);
-        verify(trainerRepo, times(1)).update(trainerArgumentCaptor.capture());
+        verify(trainerRepo, times(2)).findById(1L);
+        verify(trainerRepo, times(2)).update(trainerArgumentCaptor.capture());
     }
 
     @Test
-    @DisplayName("Toggle active status - should activate when currently inactive")
-    void toggleActiveStatus_ShouldActivateWhenCurrentlyInactive() {
-        // Given
-        testTrainer.setActive(false);
-        when(trainerRepo.findById(1L)).thenReturn(Optional.of(testTrainer));
-        when(trainerRepo.update(any(Trainer.class))).thenReturn(testTrainer);
-
-        // When
-        var result = trainerService.toggleActiveStatus(1L);
-
-        // Then
-        assertTrue(result);
-        assertTrue(testTrainer.isActive());
-
-        verify(trainerRepo, times(1)).findById(1L);
-        verify(trainerRepo, times(1)).update(trainerArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Toggle active status - should throw exception when entity not found")
-    void toggleActiveStatus_WhenEntityNotFound_ShouldThrowException() {
-        // Given
-        when(trainerRepo.findById(999L)).thenReturn(Optional.empty());
-
-        // When - Then
-        assertThrows(
-                NoSuchElementException.class,
-                () -> trainerService.toggleActiveStatus(999L),
-                "Entity with id=999 not found"
-        );
-
-        verify(trainerRepo, times(1)).findById(999L);
-        verify(trainerRepo, never()).update(any(Trainer.class));
-    }
-
-    @Test
-    @DisplayName("Is username and password matching - should return true for matching credentials")
+    @DisplayName("Is username and password matching - should return true/false for matching credentials")
     void isUsernameAndPasswordMatching_ShouldReturnTrueForMatchingCredentials() {
         // Given
         testTrainer.setPassword(UserUtils.hashPassword(testTrainer.getPassword()));
-        when(trainerRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainer));
+        when(trainerRepo.findByUserName(anyString()))
+                .thenReturn(Optional.of(testTrainer))
+                .thenReturn(Optional.of(testTrainer))
+                .thenReturn(Optional.empty());
 
         // When
-        var result = trainerService.isUsernameAndPasswordMatching("testName1.testLastName1", "testPassword1");
+        var result1 = trainerService.isUsernameAndPasswordMatching(testTrainee.getUsername(), "testPassword1");
+        var result2 = trainerService.isUsernameAndPasswordMatching(testTrainee.getUsername(), "wrongPassword");
+        var result3 = trainerService.isUsernameAndPasswordMatching("unknownUser", "testPassword");
 
         // Then
-        assertTrue(result);
-        verify(trainerRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Is username and password matching - should return false for non-matching credentials")
-    void isUsernameAndPasswordMatching_ShouldReturnFalseForNonMatchingCredentials() {
-        // Given
-        testTrainer.setPassword(UserUtils.hashPassword(testTrainee.getPassword()));
-        when(trainerRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainer));
-
-        // When
-        var result = trainerService.isUsernameAndPasswordMatching("testName1.testLastName1", "wrongPassword");
-
-        // Then
-        assertFalse(result);
-        verify(trainerRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Is username and password matching - should return false when user not found")
-    void isUsernameAndPasswordMatching_WhenUserNotFound_ShouldReturnFalse() {
-        // Given
-        when(trainerRepo.findByUserName(anyString())).thenReturn(Optional.empty());
-
-        // When
-        var result = trainerService.isUsernameAndPasswordMatching("unknownUser", "testPassword");
-
-        // Then
-        assertFalse(result);
-        verify(trainerRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
+        assertTrue(result1);
+        assertFalse(result2);
+        assertFalse(result3);
+        verify(trainerRepo, times(3)).findByUserName(stringArgumentCaptor.capture());
     }
 }

@@ -29,38 +29,31 @@ public class TrainingRepoImplTest extends DbTestBase {
     @DisplayName("Find a training by existing ID and verify it is returned")
     void findTrainingById_WhenIdExists_ShouldReturnTraining() {
         // Given
-        trainingRepo.save(testTraining);
+        var savedTrainee = trainingRepo.save(testTraining);
 
         // When
-        var foundTraining = trainingRepo.findById(1L);
+        var foundTraining = trainingRepo.findById(savedTrainee.getId());
+        var unFoundTraining = trainingRepo.findById(999L);
 
         // Then
         assertTrue(foundTraining.isPresent());
-        assertEquals("TestName", foundTraining.get().getTrainingName());
-    }
-
-    @Test
-    @DisplayName("Find a training by non-existing ID and verify empty result")
-    void findTrainingById_WhenIdDoesNotExist_ShouldReturnEmptyOptional() {
-        // Given - When
-        var foundTraining = trainingRepo.findById(999L);
-
-        // Then
-        assertFalse(foundTraining.isPresent());
+        assertEquals(savedTrainee.getTrainingName(), foundTraining.get().getTrainingName());
+        assertFalse(unFoundTraining.isPresent());
     }
 
     @Test
     @DisplayName("Update a training and verify the changes are saved")
     void updateTraining_ShouldSaveUpdatedTraining() {
         // Given
-        trainingRepo.save(testTraining);
-        testTraining.setTrainingName("newTrainingName");
+        var newTrainingName = "newTrainingName";
+        var savedTraining = trainingRepo.save(testTraining);
+        testTraining.setTrainingName(newTrainingName);
 
         // When
         var updatedTraining = trainingRepo.update(testTraining);
 
         // Then
-        assertEquals("newTrainingName", updatedTraining.getTrainingName());
+        assertEquals(newTrainingName, updatedTraining.getTrainingName());
     }
 
     @Test
@@ -78,25 +71,17 @@ public class TrainingRepoImplTest extends DbTestBase {
     }
 
     @Test
-    @DisplayName("Check if training exists by ID and verify true is returned")
+    @DisplayName("Check if training exists by ID and verify it is returned")
     void existsById_WhenIdExists_ShouldReturnTrue() {
         // Given
-        trainingRepo.save(testTraining);
+        var savedTraining = trainingRepo.save(testTraining);
 
         // When
-        var result = trainingRepo.isExistsById(1L);
+        var result1 = trainingRepo.isExistsById(savedTraining.getId());
+        var result2 = trainingRepo.isExistsById(999L);
 
         // Then
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("Check if training exists by ID and verify false is returned")
-    void existsById_WhenIdDoesNotExist_ShouldReturnFalse() {
-        // Given - When
-        var result = trainingRepo.isExistsById(999L);
-
-        // Then
-        assertFalse(result);
+        assertTrue(result1);
+        assertFalse(result2);
     }
 }

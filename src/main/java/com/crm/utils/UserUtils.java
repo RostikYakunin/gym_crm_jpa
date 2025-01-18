@@ -28,21 +28,16 @@ public class UserUtils {
             counter++;
         }
 
-        log.info("Unique username was created: " + uniqueUsername);
         return uniqueUsername;
     }
 
     public static String hashPassword(String password) {
         log.info("Started hashing password... ");
-        var hashedPass = BCrypt.hashpw(password, BCrypt.gensalt());
-        log.info("Hashing successfully completed... ");
-        return hashedPass;
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public static boolean matchesPasswordHash(String inputtedPassword, String passwordHash) {
         log.info("Started checking password and hash... ");
-        var result = BCrypt.checkpw(inputtedPassword, passwordHash);
-        log.info("Checking successfully completed... ");
-        return result;
+        return BCrypt.checkpw(inputtedPassword, passwordHash);
     }
 }
