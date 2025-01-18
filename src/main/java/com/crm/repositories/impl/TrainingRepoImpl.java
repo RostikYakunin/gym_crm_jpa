@@ -1,10 +1,9 @@
 package com.crm.repositories.impl;
 
-import com.crm.repositories.entities.Training;
 import com.crm.repositories.TrainingRepo;
+import com.crm.repositories.entities.Training;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -23,14 +22,7 @@ public class TrainingRepoImpl implements TrainingRepo {
     }
 
     @Override
-    @Transactional
     public Training save(Training entity) {
-        log.debug("Start saving training... ");
-        if (entity.getId() != null) {
-            log.debug("Start merging training with id= " + entity.getId());
-            return entityManager.merge(entity);
-        }
-
         log.debug("Start saving new training... ");
         entityManager.persist(entity);
         return entity;
@@ -39,7 +31,7 @@ public class TrainingRepoImpl implements TrainingRepo {
     @Override
     public Training update(Training entity) {
         log.debug("Start updating training with id= " + entity.getId());
-        return save(entity);
+        return entityManager.merge(entity);
     }
 
     @Override

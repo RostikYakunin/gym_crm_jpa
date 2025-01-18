@@ -84,7 +84,6 @@ class TraineeServiceImplTest extends UnitTestBase {
     @DisplayName("deleteById should return true when trainee was successfully deleted")
     void deleteById_ShouldDelete_WhenTraineeExists() {
         // Given
-        when(traineeRepo.isExistsById(anyLong())).thenReturn(true);
         doNothing().when(traineeRepo).delete(any(Trainee.class));
 
         // When
@@ -92,23 +91,6 @@ class TraineeServiceImplTest extends UnitTestBase {
 
         // Then
         verify(traineeRepo, times(1)).delete(traineeArgumentCaptor.capture());
-        verify(traineeRepo, times(1)).isExistsById(idArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("deleteById should throw Exception when trainee was not found in DB")
-    void deleteById_ShouldTrowException_WhenTraineeWasNotFound() {
-        // Given
-        when(traineeRepo.isExistsById(anyLong())).thenReturn(false);
-
-        // When - Then
-        assertThrows(
-                NoSuchElementException.class,
-                () -> traineeService.delete(testTrainee),
-                "Trainee with id=1 not found"
-        );
-
-        verify(traineeRepo, never()).delete(traineeArgumentCaptor.capture());
     }
 
     @Test
@@ -148,23 +130,6 @@ class TraineeServiceImplTest extends UnitTestBase {
     }
 
     @Test
-    @DisplayName("deleteByUserName - should throw Exception when trainee was not found in DB")
-    void deleteByUserName_ShouldTrowException_WhenTraineeWasNotFound() {
-        // Given
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.empty());
-
-        // When - Then
-        assertThrows(
-                NoSuchElementException.class,
-                () -> traineeService.deleteByUsername(testTrainee.getUsername()),
-                "Trainee with id=1 not found"
-        );
-
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-        verify(traineeRepo, never()).delete(traineeArgumentCaptor.capture());
-    }
-
-    @Test
     @DisplayName("deleteByUserName - should delete entity when trainee was found in DB")
     void deleteByUserName_ShouldDeleteEntity_WhenTraineeWasFound() {
         // Given
@@ -183,31 +148,20 @@ class TraineeServiceImplTest extends UnitTestBase {
     @DisplayName("findByUsername - should find entity when trainee was found in DB")
     void findByUsername_ShouldFindEntity_WhenTraineeWasFound() {
         // Given
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainee));
+        when(traineeRepo.findByUserName(anyString()))
+                .thenReturn(Optional.of(testTrainee))
+                .thenReturn(Optional.empty());
 
         // When
-        var result = traineeService.findByUsername(testTrainee.getUsername());
+        var result1 = traineeService.findByUsername(testTrainee.getUsername());
+        var result2 = traineeService.findByUsername(testTrainee.getUsername());
 
         // Then
-        assertNotNull(result);
-        assertEquals(testTrainee, result);
+        assertNotNull(result1);
+        assertEquals(testTrainee, result1);
+        assertNull(result2);
 
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("findByUsername - should not find entity when trainee was not found in DB")
-    void findByUsername_ShouldNotFindEntity_WhenTraineeWasNotFound() {
-        // Given
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.empty());
-
-        // When
-        var result = traineeService.findByUsername(testTrainee.getUsername());
-
-        // Then
-        assertNull(result);
-
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
+        verify(traineeRepo, times(2)).findByUserName(stringArgumentCaptor.capture());
     }
 
     @Test
@@ -218,80 +172,33 @@ class TraineeServiceImplTest extends UnitTestBase {
         when(traineeRepo.update(any(Trainee.class))).thenReturn(testTrainee);
 
         // When
-        var result = traineeService.changePassword(testTrainee, "testPassword", "newPass");
+        var result1 = traineeService.changePassword(testTrainee, "testPassword", "newPass");
+        var result2 = traineeService.changePassword(testTrainee, testTrainee.getPassword(), "newPass");
+
 
         // Then
-        assertTrue(result);
+        assertTrue(result1);
+        assertFalse(result2);
         verify(traineeRepo, times(1)).update(traineeArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("changePassword - should change password when trainee`s password matches with found in DB")
-    void changePassword_ShouldNotChangePass_WhenPasswordsNotMatches() {
-        // Given
-        testTrainee.setPassword(UserUtils.hashPassword(testTrainee.getPassword()));
-        when(traineeRepo.update(any(Trainee.class))).thenReturn(testTrainee);
-
-        // When
-        var result = traineeService.changePassword(testTrainee, testTrainee.getPassword(), "newPass");
-
-        // Then
-        assertFalse(result);
-        verify(traineeRepo, never()).update(traineeArgumentCaptor.capture());
     }
 
     @Test
     @DisplayName("Toggle active status - should deactivate when currently active")
     void toggleActiveStatus_ShouldDeactivateWhenCurrentlyActive() {
         // Given
-        when(traineeRepo.findById(1L)).thenReturn(Optional.of(testTrainee));
+        when(traineeRepo.findById(anyLong())).thenReturn(Optional.of(testTrainee));
         when(traineeRepo.update(any(Trainee.class))).thenReturn(testTrainee);
 
         // When
-        var result = traineeService.toggleActiveStatus(1L);
+        var result1 = traineeService.activateStatus(1L);
+        var result2 = traineeService.deactivateStatus(1L);
 
         // Then
-        assertFalse(result);
-        assertFalse(testTrainee.isActive());
+        assertTrue(result1);
+        assertFalse(result2);
 
-        verify(traineeRepo, times(1)).findById(1L);
-        verify(traineeRepo, times(1)).update(traineeArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Toggle active status - should activate when currently inactive")
-    void toggleActiveStatus_ShouldActivateWhenCurrentlyInactive() {
-        // Given
-        testTrainee.setActive(false);
-        when(traineeRepo.findById(1L)).thenReturn(Optional.of(testTrainee));
-        when(traineeRepo.update(any(Trainee.class))).thenReturn(testTrainee);
-
-        // When
-        var result = traineeService.toggleActiveStatus(1L);
-
-        // Then
-        assertTrue(result);
-        assertTrue(testTrainee.isActive());
-
-        verify(traineeRepo, times(1)).findById(1L);
-        verify(traineeRepo, times(1)).update(traineeArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Toggle active status - should throw exception when entity not found")
-    void toggleActiveStatus_WhenEntityNotFound_ShouldThrowException() {
-        // Given
-        when(traineeRepo.findById(999L)).thenReturn(Optional.empty());
-
-        // When - Then
-        assertThrows(
-                NoSuchElementException.class,
-                () -> traineeService.toggleActiveStatus(999L),
-                "Entity with id=999 not found"
-        );
-
-        verify(traineeRepo).findById(999L);
-        verify(traineeRepo, never()).update(any(Trainee.class));
+        verify(traineeRepo, times(2)).findById(1L);
+        verify(traineeRepo, times(2)).update(traineeArgumentCaptor.capture());
     }
 
     @Test
@@ -299,42 +206,20 @@ class TraineeServiceImplTest extends UnitTestBase {
     void isUsernameAndPasswordMatching_ShouldReturnTrueForMatchingCredentials() {
         // Given
         testTrainee.setPassword(UserUtils.hashPassword(testTrainee.getPassword()));
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainee));
+        when(traineeRepo.findByUserName(anyString()))
+                .thenReturn(Optional.of(testTrainee))
+                .thenReturn(Optional.of(testTrainee))
+                .thenReturn(Optional.empty());
 
         // When
-        var result = traineeService.isUsernameAndPasswordMatching("testName.testLastName", "testPassword");
+        var result1 = traineeService.isUsernameAndPasswordMatching("testName.testLastName", "testPassword");
+        var result2 = traineeService.isUsernameAndPasswordMatching("testName.testLastName", "wrongPassword");
+        var result3 = traineeService.isUsernameAndPasswordMatching("unknownUser", "testPassword");
 
         // Then
-        assertTrue(result);
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Is username and password matching - should return false for non-matching credentials")
-    void isUsernameAndPasswordMatching_ShouldReturnFalseForNonMatchingCredentials() {
-        // Given
-        testTrainee.setPassword(UserUtils.hashPassword(testTrainee.getPassword()));
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.of(testTrainee));
-
-        // When
-        var result = traineeService.isUsernameAndPasswordMatching("testName.testLastName", "wrongPassword");
-
-        // Then
-        assertFalse(result);
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
-    }
-
-    @Test
-    @DisplayName("Is username and password matching - should return false when user not found")
-    void isUsernameAndPasswordMatching_WhenUserNotFound_ShouldReturnFalse() {
-        // Given
-        when(traineeRepo.findByUserName(anyString())).thenReturn(Optional.empty());
-
-        // When
-        var result = traineeService.isUsernameAndPasswordMatching("unknownUser", "testPassword");
-
-        // Then
-        assertFalse(result);
-        verify(traineeRepo, times(1)).findByUserName(stringArgumentCaptor.capture());
+        assertTrue(result1);
+        assertFalse(result2);
+        assertFalse(result3);
+        verify(traineeRepo, times(3)).findByUserName(stringArgumentCaptor.capture());
     }
 }

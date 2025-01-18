@@ -20,17 +20,13 @@ import java.util.Set;
 @Table(name = "trainees")
 @DynamicUpdate
 public class Trainee extends User {
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id")
-    private User user;
-
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     private Set<Training> trainings = new HashSet<>();
 }

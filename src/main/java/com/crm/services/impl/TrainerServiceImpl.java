@@ -4,11 +4,13 @@ import com.crm.models.TrainingType;
 import com.crm.repositories.TrainerRepo;
 import com.crm.repositories.entities.Trainer;
 import com.crm.services.TrainerService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@Transactional
 public class TrainerServiceImpl extends AbstractUserService<Trainer, TrainerRepo> implements TrainerService {
     public TrainerServiceImpl(TrainerRepo repository) {
         super(repository);
@@ -25,6 +27,6 @@ public class TrainerServiceImpl extends AbstractUserService<Trainer, TrainerRepo
                 .specialization(specialization)
                 .build();
 
-        return save(newTrainer);
+        return super.save(newTrainer);
     }
 }

@@ -4,6 +4,7 @@ import com.crm.repositories.UserRepo;
 import com.crm.repositories.entities.User;
 import com.crm.services.UserService;
 import com.crm.utils.UserUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +12,7 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public abstract class AbstractUserService<T extends User, R extends UserRepo<T>> implements UserService<T> {
     protected final R repository;
 
@@ -73,21 +75,30 @@ public abstract class AbstractUserService<T extends User, R extends UserRepo<T>>
         return true;
     }
 
-    public boolean toggleActiveStatus(long id) {
-        log.info("Toggling active status for entity with id={}", id);
-        var foundEntity = repository.findById(id)
-                .orElseThrow(
-                        () -> {
-                            log.error("Entity with id={} not found, deletion failed", id);
-                            throw new NoSuchElementException("Entity with id=" + id + " not found");
-                        }
-                );
+    public boolean activateStatus(long id) {
+        log.info("Activating status for entity with id={}", id);
 
-        var currentStatus = foundEntity.isActive();
-        log.info("Changing active status from {} to {}", currentStatus, !currentStatus);
-        foundEntity.setActive(!currentStatus);
+        var foundEntity = repository.findById(id);
+        if (foundEntity.isPresent()) {
+            var entity = foundEntity.get();
+            entity.setActive(true);
+            return repository.update(entity).isActive();
+        }
 
-        return repository.update(foundEntity).isActive();
+        return false;
+    }
+
+    public boolean deactivateStatus(long id) {
+        log.info("Deactivating status for entity with id={}", id);
+
+        var foundEntity = repository.findById(id);
+        if (foundEntity.isPresent()) {
+            var entity = foundEntity.get();
+            entity.setActive(false);
+            return repository.update(entity).isActive();
+        }
+
+        return false;
     }
 
     public boolean isUsernameAndPasswordMatching(String username, String inputtedPassword) {

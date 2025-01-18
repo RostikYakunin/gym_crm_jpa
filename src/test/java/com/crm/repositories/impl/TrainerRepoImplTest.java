@@ -33,24 +33,17 @@ public class TrainerRepoImplTest extends DbTestBase {
     @DisplayName("Find a trainer by existing ID and verify it is returned")
     void findTrainerById_WhenIdExists_ShouldReturnTrainer() {
         // Given
-        trainerRepo.save(testTrainer);
+        var savedTrainer = trainerRepo.save(testTrainer);
 
         // When
-        var foundTrainer = trainerRepo.findById(testTrainer.getId());
+        var foundTrainer = trainerRepo.findById(savedTrainer.getId());
+        var unFoundTrainer = trainerRepo.findById(999L);
+
 
         // Then
         assertTrue(foundTrainer.isPresent());
         assertEquals("testName1.testLastName1", foundTrainer.get().getUsername());
-    }
-
-    @Test
-    @DisplayName("Find a trainer by non-existing ID and verify empty result")
-    void findTrainerById_WhenIdDoesNotExist_ShouldReturnEmptyOptional() {
-        // Given - When
-        var foundTrainer = trainerRepo.findById(999L);
-
-        // Then
-        assertFalse(foundTrainer.isPresent());
+        assertFalse(unFoundTrainer.isPresent());
     }
 
     @Test
@@ -82,26 +75,19 @@ public class TrainerRepoImplTest extends DbTestBase {
     }
 
     @Test
-    @DisplayName("Check if trainer exists by ID and verify true is returned")
+    @DisplayName("Check if trainer exists by ID and verify result is returned")
     void existsById_WhenIdExists_ShouldReturnTrue() {
         // Given
         trainerRepo.save(testTrainer);
 
         // When
-        var result = trainerRepo.isExistsById(testTrainer.getId());
+        var result1 = trainerRepo.isExistsById(testTrainer.getId());
+        var result2 = trainerRepo.isExistsById(999L);
+
 
         // Then
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("Check if trainer exists by ID and verify false is returned")
-    void existsById_WhenIdDoesNotExist_ShouldReturnFalse() {
-        // Given - When
-        var result = trainerRepo.isExistsById(999L);
-
-        // Then
-        assertFalse(result);
+        assertTrue(result1);
+        assertFalse(result2);
     }
 
     @Test
@@ -138,23 +124,15 @@ public class TrainerRepoImplTest extends DbTestBase {
     }
 
     @Test
-    @DisplayName("isUserNameExists - should return true when entity was found")
+    @DisplayName("isUserNameExists - should return result when entity was found")
     void isUserNameExists_ShouldReturnTrue_WhenEntityWasFound() {
         // Given - When
-        var result = trainerRepo.isUserNameExists("testName1.testLastName1");
+        var positiveResult = trainerRepo.isUserNameExists("testName1.testLastName1");
+        var negativeResult = trainerRepo.isUserNameExists("unknown");
 
         // Then
-        assertTrue(result);
-    }
-
-    @Test
-    @DisplayName("isUserNameExists - should return false when entity was not found")
-    void isUserNameExists_ShouldReturnFalse_WhenEntityWasNotFound() {
-        // Given - When
-        var result = trainerRepo.isUserNameExists("unknown1");
-
-        // Then
-        assertFalse(result);
+        assertTrue(positiveResult);
+        assertFalse(negativeResult);
     }
 
     @Test
