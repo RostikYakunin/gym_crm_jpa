@@ -17,7 +17,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Training findById(long id) {
-        log.info("Searching for trainee with id={}", id);
+        log.info("Searching for training with id={}", id);
         return trainingRepo.findById(id).orElse(null);
     }
 

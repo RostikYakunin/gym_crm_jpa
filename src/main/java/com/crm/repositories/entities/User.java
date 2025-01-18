@@ -31,6 +31,6 @@ public abstract class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean isActive;
 }
